@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
+
+const screenWidth = Dimensions.get('window').width;
 
 const InsightsScreen = () => {
   const categories = [
@@ -9,6 +12,38 @@ const InsightsScreen = () => {
     'Body Signals',
     'Lifestyle Impact',
   ];
+
+  const stabilityData = {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [
+      {
+        data: [65, 70, 68, 74, 72, 80, 78],
+        color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
+        strokeWidth: 3,
+      },
+    ],
+  };
+
+  const chartConfig = {
+    backgroundColor: '#ffffff',
+    backgroundGradientFrom: '#ffffff',
+    backgroundGradientTo: '#ffffff',
+    decimalPlaces: 0,
+    color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(142, 142, 147, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: '4',
+      strokeWidth: '2',
+      stroke: '#007aff',
+    },
+    propsForBackgroundLines: {
+      strokeDasharray: '', // solid background lines
+      stroke: '#f2f2f7',
+    },
+  };
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
@@ -32,8 +67,20 @@ const InsightsScreen = () => {
           <Text style={styles.scoreValue}>78%</Text>
         </View>
         
-        <View style={[styles.placeholder, { height: 120 }]}>
-          <Text style={styles.placeholderText}>[ Stability Chart Placeholder ]</Text>
+        <View style={styles.chartContainer}>
+          <LineChart
+            data={stabilityData}
+            width={screenWidth - 72} // Adjusted for padding
+            height={180}
+            chartConfig={chartConfig}
+            bezier
+            style={styles.chartStyle}
+            withInnerLines={true}
+            withOuterLines={false}
+            withVerticalLines={false}
+            withHorizontalLines={true}
+            fromZero={true}
+          />
         </View>
       </View>
 
@@ -122,6 +169,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#007aff',
+  },
+  chartContainer: {
+    alignItems: 'center',
+    marginTop: 8,
+    marginHorizontal: -10, // Slight negative margin to allow chart to breathe
+  },
+  chartStyle: {
+    borderRadius: 16,
+    paddingRight: 40, // Space for labels
   },
   placeholder: {
     height: 100,
